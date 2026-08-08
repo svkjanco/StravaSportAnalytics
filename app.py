@@ -477,7 +477,7 @@ with tabs[2]:
                 .reindex(list(PB_DISTS.keys())).dropna())
         show = pd.DataFrame({
             "cas": best["cas_s"].map(hms),
-            "tempo": [pace_str(float(best.loc[i, "cas_s"]) / (PB_DISTS[i] / 1000))
+            "tempo": [pace_str(best.loc[i, "cas_s"] / (PB_DISTS[i] / 1000))
                       for i in best.index],
             "datum": best["date"].dt.date,
         })
@@ -671,7 +671,7 @@ with tabs[4]:
                 .reindex(list(SWIM_PB_DISTS.keys())).dropna())
         sshow = pd.DataFrame({
             "cas": sbest["cas_s"].map(hms),
-            "tempo": [pace_str(float(sbest.loc[i, "cas_s"]) / (SWIM_PB_DISTS[i] / 100), "100m")
+            "tempo": [pace_str(sbest.loc[i, "cas_s"] / (SWIM_PB_DISTS[i] / 100), "100m")
                      for i in sbest.index],
             "datum": sbest["date"].dt.date,
         })
@@ -739,14 +739,14 @@ with tabs[7]:
     v90 = pmc_full[pmc_full["date"] >= pd.Timestamp(max_d) - pd.Timedelta(days=90)]
     ax_pmc.plot(v90["date"], v90["ctl"], color=COL["ctl"], label="CTL")
     ax_pmc.plot(v90["date"], v90["atl"], color=COL["atl"], label="ATL")
-    ax_pmc.axvline(week_start, color="#999", ls=":", lw=.8)
+    ax_pmc.axvline(mdates.date2num(week_start), color="#999", ls=":", lw=.8)
     ax_pmc.set_title("Forma (90 dni)"); ax_pmc.legend(fontsize=8); datefmt(ax_pmc)
 
     ax_sport = fig.add_subplot(gs[3])
     by_sport = wk_act.groupby("sport")["tss"].sum()
     if not by_sport.empty:
         colors_s = [COL.get(s, "#999") for s in by_sport.index]
-        ax_sport.bar(by_sport.index, by_sport.values, color=colors_s)
+        ax_sport.bar(by_sport.index, by_sport.to_numpy(), color=colors_s)
     ax_sport.set_title("TSS po sportoch (tento tyzden)")
     fig.tight_layout()
 
